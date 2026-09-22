@@ -1,0 +1,237 @@
+# ECIP Controlled Enterprise Ontology — Healthcare domain
+#
+# This file is the single source of truth for every category a document can
+# be classified into. Classifiers may only resolve to a `type` id defined
+# here (see ADR-001 in docs/decisions.md); nothing in application code
+# hard-codes a category name or ontology path.
+#
+# `chunker` on a category is the *semantic* chunking hint. The actual
+# chunker selection also considers file structure (a .pptx is always
+# slide-chunked, a .xlsx is always table-chunked) — see
+# app/chunkers/selector.py and docs/chunking.md for the full decision tree.
+#
+# `document_type` on a type node is the coarse, human-friendly label shown
+# in the UI and used for the "document_type" field in classifier output
+# (spec section 12) — it is intentionally more specific than the category
+# name (e.g. two leaves under "Architecture" can be different document
+# types: a written doc vs. a slide deck).
+ontology_version: "1.0"
+root: Healthcare
+
+domains:
+  - id: clinical
+    name: Clinical
+    default_security_level: restricted
+    default_allowed_groups: [clinical, executive]
+    categories:
+      - id: clinical.patient_records
+        name: Patient Records
+        chunker: generic
+        types:
+          - id: clinical.patient_records.chart_note
+            name: Chart Note
+            document_type: patient_record
+            keywords: [chart note, patient record, encounter summary, progress note]
+
+      - id: clinical.clinical_guidelines
+        name: Clinical Guidelines
+        chunker: technical
+        types:
+          - id: clinical.clinical_guidelines.patient_care_guideline
+            name: Patient Care Guideline
+            document_type: clinical_guideline
+            keywords: [care guideline, clinical guideline, standard of care, patient care protocol, evidence-based practice]
+
+      - id: clinical.procedures
+        name: Procedures
+        chunker: technical
+        types:
+          - id: clinical.procedures.clinical_procedure
+            name: Clinical Procedure
+            document_type: procedure
+            keywords: [clinical procedure, procedure steps, pre-operative, post-operative, protocol]
+
+      - id: clinical.medical_research
+        name: Medical Research
+        chunker: generic
+        types:
+          - id: clinical.medical_research.research_study
+            name: Research Study
+            document_type: research_study
+            keywords: [study findings, clinical trial, research methodology, cohort, abstract]
+
+  - id: administrative
+    name: Administrative
+    default_security_level: internal
+    default_allowed_groups: [employee, executive]
+    categories:
+      - id: administrative.policies
+        name: Policies
+        chunker: technical
+        types:
+          - id: administrative.policies.employee_healthcare_policy
+            name: Employee Healthcare Policy
+            document_type: policy
+            keywords: [employee healthcare policy, benefits policy, health plan enrollment, employee benefits]
+
+      - id: administrative.procedures
+        name: Procedures
+        chunker: technical
+        types:
+          - id: administrative.procedures.standard_operating_procedure
+            name: Standard Operating Procedure
+            document_type: procedure
+            keywords: [standard operating procedure, sop, operating procedure]
+
+      - id: administrative.forms
+        name: Forms
+        chunker: generic
+        types:
+          - id: administrative.forms.patient_intake_form
+            name: Patient Intake Form
+            document_type: form
+            keywords: [intake form, registration form, patient information form]
+
+      - id: administrative.communications
+        name: Communications
+        chunker: email
+        types:
+          - id: administrative.communications.meeting_notes
+            name: Meeting Notes
+            document_type: communication
+            keywords: [meeting notes, minutes, attendees, action items, agenda]
+          - id: administrative.communications.provider_outreach_email
+            name: Provider Outreach Email
+            document_type: communication
+            keywords: [outreach, provider communication, network update, dear provider]
+
+  - id: financial
+    name: Financial
+    default_security_level: confidential
+    default_allowed_groups: [finance, executive, provider-management]
+    categories:
+      - id: financial.claims
+        name: Claims
+        chunker: spreadsheet
+        types:
+          - id: financial.claims.insurance_claim_report
+            name: Insurance Claim Report
+            document_type: claim_report
+            keywords: [claim report, claim id, payer, adjudication, cpt code, claim status]
+          - id: financial.claims.claims_data_export
+            name: Claims Data Export
+            document_type: claims_data_export
+            keywords: [claims export, claim line, denial code, remittance]
+
+      - id: financial.invoices
+        name: Invoices
+        chunker: generic
+        types:
+          - id: financial.invoices.hospital_invoice
+            name: Hospital Invoice
+            document_type: invoice
+            keywords: [invoice, amount due, bill to, invoice number, remit payment]
+
+      - id: financial.payments
+        name: Payments
+        chunker: spreadsheet
+        types:
+          - id: financial.payments.financial_report
+            name: Financial Report
+            document_type: financial_report
+            keywords: [revenue, financial summary, quarterly report, payment volume, financial performance]
+
+      - id: financial.reimbursement
+        name: Reimbursement
+        chunker: technical
+        types:
+          - id: financial.reimbursement.reimbursement_policy
+            name: Reimbursement Policy
+            document_type: policy
+            keywords: [reimbursement rate, reimbursement policy, fee schedule, reimbursement methodology]
+
+  - id: legal
+    name: Legal
+    default_security_level: confidential
+    default_allowed_groups: [legal, provider-management, executive]
+    categories:
+      - id: legal.contracts
+        name: Contracts
+        chunker: contract
+        types:
+          - id: legal.contracts.provider_agreement
+            name: Provider Agreement
+            document_type: contract
+            keywords: [provider agreement, termination, provider entity, effective date, party, governing law]
+
+      - id: legal.agreements
+        name: Agreements
+        chunker: contract
+        types:
+          - id: legal.agreements.provider_network_agreement
+            name: Provider Network Agreement
+            document_type: agreement
+            keywords: [network agreement, network participation, credentialing, in-network, panel]
+
+      - id: legal.compliance
+        name: Compliance
+        chunker: technical
+        types:
+          - id: legal.compliance.hipaa_compliance_policy
+            name: HIPAA Compliance Policy
+            document_type: compliance_policy
+            keywords: [hipaa, protected health information, phi, compliance policy, privacy rule, security rule]
+
+      - id: legal.regulations
+        name: Regulations
+        chunker: technical
+        types:
+          - id: legal.regulations.regulatory_document
+            name: Regulatory Document
+            document_type: regulatory_document
+            keywords: [regulation, cfr, compliance requirement, statute, regulatory guidance]
+
+  - id: technical
+    name: Technical
+    default_security_level: internal
+    default_allowed_groups: [engineering, executive]
+    categories:
+      - id: technical.architecture
+        name: Architecture
+        chunker: technical
+        types:
+          - id: technical.architecture.api_architecture_document
+            name: API Architecture Document
+            document_type: architecture_document
+            keywords: [architecture, api design, system design, component diagram, service boundary]
+          - id: technical.architecture.technical_architecture_presentation
+            name: Technical Architecture Presentation
+            document_type: presentation
+            keywords: [architecture overview, roadmap, slide, presentation, technical overview]
+
+      - id: technical.api_documentation
+        name: API Documentation
+        chunker: technical
+        types:
+          - id: technical.api_documentation.api_reference
+            name: API Reference
+            document_type: api_reference
+            keywords: [endpoint, request, response, api reference, authentication header]
+
+      - id: technical.runbooks
+        name: Runbooks
+        chunker: technical
+        types:
+          - id: technical.runbooks.production_runbook
+            name: Production Runbook
+            document_type: runbook
+            keywords: [runbook, incident response, rollback, on-call, escalation]
+
+      - id: technical.troubleshooting
+        name: Troubleshooting
+        chunker: technical
+        types:
+          - id: technical.troubleshooting.troubleshooting_guide
+            name: Troubleshooting Guide
+            document_type: troubleshooting_guide
+            keywords: [troubleshooting, error code, diagnostic steps, known issue]

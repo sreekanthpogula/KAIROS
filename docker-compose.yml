@@ -1,0 +1,72 @@
+# `docker compose up` is sufficient to start the whole system.
+#
+# Note on VECTOR_BACKEND: postgres here ships with the pgvector extension
+# available (see the image), and the backend can run its full pipeline
+# against this Postgres instance instead of the default SQLite file — but
+# retrieval's vector search still uses the numpy cosine-similarity backend
+# either way. A native pgvector ANN query path is the designed extension
+# point (app/retrieval/vector_index.py) but isn't implemented/tested in
+# this POC — see docs/decisions.md. Don't set VECTOR_BACKEND=pgvector here;
+# it would be a no-op today.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ecip
+      POSTGRES_PASSWORD: ecip
+      POSTGRES_DB: ecip
+    ports:
+      - "5432:5432"
+    volumes:
+      - ecip_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecip"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DEMO_MODE: "true"
+      DATABASE_URL: postgresql://ecip:ecip@postgres:5432/ecip
+      ONTOLOGY_PATH: /app/ontology/healthcare_ontology.yaml
+      UPLOAD_DIR: /app/data/raw
+      PROCESSED_DIR: /app/data/processed
+      SAMPLE_DIR: /app/data/samples
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ecip_uploads:/app/data/raw
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    profiles: ["tools"]
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@ecip.local
+      PGADMIN_DEFAULT_PASSWORD: ecip
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  ecip_postgres_data:
+  ecip_uploads:

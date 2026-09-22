@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@import "./theme.css";
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+* {
+  scrollbar-color: var(--baseline) transparent;
+}

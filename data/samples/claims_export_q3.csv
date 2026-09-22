@@ -1,0 +1,5 @@
+claim_line_id,claim_id,cpt_code,denial_code,billed_amount,paid_amount
+L-9001,CLM-100236,80053,CO-16,95.0,0.0
+L-9002,CLM-100239,99213,,185.0,148.0
+L-9003,CLM-100240,36415,,25.0,20.0
+L-9004,CLM-100241,99396,CO-45,210.0,175.0

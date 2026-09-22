@@ -1,0 +1,128 @@
+[
+  {
+    "filename": "provider_agreement_northvalley.pdf",
+    "ontology_id": "legal.contracts.provider_agreement",
+    "domain": "legal",
+    "document_type": "contract",
+    "document_subtype": "provider_agreement"
+  },
+  {
+    "filename": "employee_healthcare_policy.docx",
+    "ontology_id": "administrative.policies.employee_healthcare_policy",
+    "domain": "administrative",
+    "document_type": "policy",
+    "document_subtype": "employee_healthcare_policy"
+  },
+  {
+    "filename": "patient_care_guideline_diabetes.docx",
+    "ontology_id": "clinical.clinical_guidelines.patient_care_guideline",
+    "domain": "clinical",
+    "document_type": "clinical_guideline",
+    "document_subtype": "patient_care_guideline"
+  },
+  {
+    "filename": "insurance_claim_report_q3.xlsx",
+    "ontology_id": "financial.claims.insurance_claim_report",
+    "domain": "financial",
+    "document_type": "claim_report",
+    "document_subtype": "insurance_claim_report"
+  },
+  {
+    "filename": "hospital_invoice_2456.pdf",
+    "ontology_id": "financial.invoices.hospital_invoice",
+    "domain": "financial",
+    "document_type": "invoice",
+    "document_subtype": "hospital_invoice"
+  },
+  {
+    "filename": "reimbursement_policy_outpatient.pdf",
+    "ontology_id": "financial.reimbursement.reimbursement_policy",
+    "domain": "financial",
+    "document_type": "policy",
+    "document_subtype": "reimbursement_policy"
+  },
+  {
+    "filename": "api_architecture_document.md",
+    "ontology_id": "technical.architecture.api_architecture_document",
+    "domain": "technical",
+    "document_type": "architecture_document",
+    "document_subtype": "api_architecture_document"
+  },
+  {
+    "filename": "production_runbook_patient_portal.md",
+    "ontology_id": "technical.runbooks.production_runbook",
+    "domain": "technical",
+    "document_type": "runbook",
+    "document_subtype": "production_runbook"
+  },
+  {
+    "filename": "hipaa_compliance_policy.pdf",
+    "ontology_id": "legal.compliance.hipaa_compliance_policy",
+    "domain": "legal",
+    "document_type": "compliance_policy",
+    "document_subtype": "hipaa_compliance_policy"
+  },
+  {
+    "filename": "provider_network_agreement.docx",
+    "ontology_id": "legal.agreements.provider_network_agreement",
+    "domain": "legal",
+    "document_type": "agreement",
+    "document_subtype": "provider_network_agreement"
+  },
+  {
+    "filename": "clinical_procedure_central_line.html",
+    "ontology_id": "clinical.procedures.clinical_procedure",
+    "domain": "clinical",
+    "document_type": "procedure",
+    "document_subtype": "clinical_procedure"
+  },
+  {
+    "filename": "financial_report_q3_2026.xlsx",
+    "ontology_id": "financial.payments.financial_report",
+    "domain": "financial",
+    "document_type": "financial_report",
+    "document_subtype": "financial_report"
+  },
+  {
+    "filename": "technical_architecture_presentation.pptx",
+    "ontology_id": "technical.architecture.technical_architecture_presentation",
+    "domain": "technical",
+    "document_type": "presentation",
+    "document_subtype": "technical_architecture_presentation"
+  },
+  {
+    "filename": "meeting_notes_provider_relations.txt",
+    "ontology_id": "administrative.communications.meeting_notes",
+    "domain": "administrative",
+    "document_type": "communication",
+    "document_subtype": "meeting_notes"
+  },
+  {
+    "filename": "regulatory_document_cms_updates.html",
+    "ontology_id": "legal.regulations.regulatory_document",
+    "domain": "legal",
+    "document_type": "regulatory_document",
+    "document_subtype": "regulatory_document"
+  },
+  {
+    "filename": "ambiguous_mixed_memo.pdf",
+    "ontology_id": "financial.reimbursement.reimbursement_policy",
+    "domain": "financial",
+    "document_type": "unclear",
+    "document_subtype": "ambiguous_low_confidence"
+  },
+  {
+    "filename": "claims_export_q3.csv",
+    "ontology_id": "financial.claims.claims_data_export",
+    "domain": "financial",
+    "document_type": "claims_data_export",
+    "document_subtype": "claims_data_export"
+  },
+  {
+    "filename": "provider_outreach_email.eml",
+    "ontology_id": "administrative.communications.provider_outreach_email",
+    "domain": "administrative",
+    "document_type": "communication",
+    "document_subtype": "provider_outreach_email"
+  }
+]

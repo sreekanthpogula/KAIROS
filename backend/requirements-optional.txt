@@ -1,0 +1,17 @@
+# Optional production-shaped extras. Not required to run the POC.
+# Install piecemeal as needed — see docs/decisions.md for the trade-off
+# behind each default.
+
+# PostgreSQL + pgvector (DATABASE_URL=postgresql://... , VECTOR_BACKEND=pgvector)
+psycopg[binary]==3.2.3
+pgvector==0.3.6
+
+# Higher-quality local embeddings (EMBEDDING_PROVIDER=sentence_transformers).
+# Pulls in torch (~600MB+); skipped by default so the POC installs fast and
+# works offline. The local_hash provider is the guaranteed-to-run default.
+sentence-transformers==3.3.1
+
+# OCR for scanned/image-based PDFs (OCR_PROVIDER=tesseract). Also requires
+# the Tesseract binary on PATH: https://github.com/tesseract-ocr/tesseract
+pytesseract==0.3.13
+pillow==11.1.0

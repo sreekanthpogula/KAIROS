@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Data / runtime artifacts
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.db
+*.db-journal
+
+# Env / secrets
+.env
+.env.local
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
