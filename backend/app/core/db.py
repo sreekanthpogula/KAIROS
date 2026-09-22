@@ -26,7 +26,17 @@ def _make_engine():
     url = settings.database_url
     if url.startswith("sqlite"):
         db_path = url.split("///")[-1]
-        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+        try:
+            Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            # Read-only deployment filesystem and DATABASE_URL wasn't
+            # overridden to point at a real database — `create_engine`
+            # below is still lazy (no connection yet), so let this surface
+            # later as a normal, catchable failure inside init_db() /
+            # app.main's lifespan instead of crashing at module import
+            # time, which would take the whole app down before it even
+            # starts (see app/main.py's startup_error handling).
+            pass
         return create_engine(url, connect_args={"check_same_thread": False})
     # Small pool: a serverless function instance (Vercel, etc.) shouldn't
     # hold many connections against a pooled endpoint (e.g. Neon's
