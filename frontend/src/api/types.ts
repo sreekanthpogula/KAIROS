@@ -260,6 +260,29 @@ export interface ScaleSimulationResult {
   reference_notes: Record<string, string>
 }
 
+export interface ConnectorCatalogEntry {
+  type: string
+  display_name: string
+  description: string
+  direction: 'pull' | 'push'
+  config_schema: Record<string, unknown>
+}
+
+export interface ConnectorTestResponse {
+  ok: boolean
+  message: string
+}
+
+export interface ConnectorRunResponse {
+  job_id: string
+  status: string
+  total_documents: number
+  completed_documents: number
+  review_documents: number
+  failed_documents: number
+  duplicate_documents: number
+}
+
 export interface HealthResponse {
   status: string
   startup_error: string | null

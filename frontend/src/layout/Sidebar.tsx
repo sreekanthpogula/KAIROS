@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import clsx from 'clsx'
 import {
-  IconClassification, IconDashboard, IconDocuments, IconHealth, IconIngestion,
+  IconClassification, IconConnectors, IconDashboard, IconDocuments, IconHealth, IconIngestion,
   IconOntology, IconRag, IconReview, IconScale, IconSearch,
 } from './icons'
 
@@ -9,6 +9,7 @@ const NAV = [
   { to: '/', label: 'Dashboard', icon: IconDashboard },
   { to: '/documents', label: 'Documents', icon: IconDocuments },
   { to: '/ingestion', label: 'Ingestion', icon: IconIngestion },
+  { to: '/connectors', label: 'Connectors', icon: IconConnectors },
   { to: '/classification', label: 'Classification', icon: IconClassification },
   { to: '/ontology', label: 'Ontology', icon: IconOntology },
   { to: '/search', label: 'Search', icon: IconSearch },
@@ -26,7 +27,7 @@ export function Sidebar() {
           E
         </div>
         <div>
-          <p className="text-sm font-semibold leading-tight">ECIP</p>
+          <p className="text-sm font-semibold leading-tight">KAIROS</p>
           <p className="text-[11px] leading-tight text-[var(--text-muted)]">Content Intelligence</p>
         </div>
       </div>

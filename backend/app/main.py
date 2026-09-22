@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import documents, health, ingestion, metrics, ontology, rag, reviews, scale, search
+from app.api import connectors, documents, health, ingestion, metrics, ontology, rag, reviews, scale, search
 from app.core import runtime_state
 from app.core.config import get_settings
 from app.core.db import SessionLocal, init_db
@@ -51,3 +51,4 @@ app.include_router(reviews.router, prefix="/api/reviews", tags=["reviews"])
 app.include_router(metrics.router, prefix="/api", tags=["metrics"])
 app.include_router(ingestion.router, prefix="/api/ingestion", tags=["ingestion"])
 app.include_router(scale.router, prefix="/api/scale-simulator", tags=["scale-simulator"])
+app.include_router(connectors.router, prefix="/api/connectors", tags=["connectors"])

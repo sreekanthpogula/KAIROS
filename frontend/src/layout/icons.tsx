@@ -21,6 +21,9 @@ export const IconDocuments = (p: SVGProps<SVGSVGElement>) => (
 export const IconIngestion = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}><path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M4 19h16" /></svg>
 )
+export const IconConnectors = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}><path d="M9 2v4M15 2v4" /><rect x="4" y="6" width="16" height="7" rx="2" /><path d="M9 13v3a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3v-3" /><circle cx="12" cy="21" r="1.5" /></svg>
+)
 export const IconClassification = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}><circle cx="12" cy="12" r="3.2" /><circle cx="5" cy="5" r="2" /><circle cx="19" cy="5" r="2" /><circle cx="5" cy="19" r="2" /><circle cx="19" cy="19" r="2" /><path d="M9.3 9.9 6.4 6.4M14.7 9.9l2.9-3.5M9.3 14.1l-2.9 3.5M14.7 14.1l2.9 3.5" /></svg>
 )

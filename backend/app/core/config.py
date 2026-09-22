@@ -98,6 +98,14 @@ class Settings(BaseSettings):
     weight_metadata: float = Field(default=0.10, alias="WEIGHT_METADATA")
     retrieval_top_k: int = Field(default=8, alias="RETRIEVAL_TOP_K")
 
+    # --- Connector catalog ---------------------------------------------------
+    # Shared secret for the webhook (push) connector — other systems POST
+    # documents to /api/connectors/webhook/ingest with this as a bearer
+    # token. Empty by default, which disables the endpoint entirely
+    # (rather than accepting unauthenticated pushes) — set a real value
+    # to turn it on.
+    webhook_ingestion_token: str = Field(default="", alias="WEBHOOK_INGESTION_TOKEN")
+
     # --- Storage paths -----------------------------------------------------
     upload_dir: str = Field(default=str(REPO_ROOT / "data" / "raw"), alias="UPLOAD_DIR")
     processed_dir: str = Field(default=str(REPO_ROOT / "data" / "processed"), alias="PROCESSED_DIR")

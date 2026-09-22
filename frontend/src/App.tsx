@@ -5,6 +5,7 @@ import { Dashboard } from './pages/Dashboard'
 import { Documents } from './pages/Documents'
 import { DocumentDetail } from './pages/DocumentDetail'
 import { Ingestion } from './pages/Ingestion'
+import { Connectors } from './pages/Connectors'
 import { Classification } from './pages/Classification'
 import { Ontology } from './pages/Ontology'
 import { Search } from './pages/Search'
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/documents" element={<Documents />} />
           <Route path="/documents/:id" element={<DocumentDetail />} />
           <Route path="/ingestion" element={<Ingestion />} />
+          <Route path="/connectors" element={<Connectors />} />
           <Route path="/classification" element={<Classification />} />
           <Route path="/ontology" element={<Ontology />} />
           <Route path="/search" element={<Search />} />

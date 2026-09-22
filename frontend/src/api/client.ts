@@ -1,4 +1,7 @@
 import type {
+  ConnectorCatalogEntry,
+  ConnectorRunResponse,
+  ConnectorTestResponse,
   DashboardMetrics,
   DocumentFullDetail,
   DocumentListResponse,
@@ -75,4 +78,10 @@ export const api = {
   getScalePresets: () => request<{ document_count_presets: (number | string)[]; default_worker_count: number }>('/scale-simulator/presets'),
   runScaleSimulation: (documentCount: string, workerCount: number) =>
     request<ScaleSimulationResult>(`/scale-simulator?document_count=${encodeURIComponent(documentCount)}&worker_count=${workerCount}`),
+
+  listConnectors: () => request<ConnectorCatalogEntry[]>('/connectors'),
+  testConnector: (type: string, config: Record<string, unknown>) =>
+    request<ConnectorTestResponse>(`/connectors/${type}/test`, { method: 'POST', body: JSON.stringify({ config }) }),
+  runConnector: (type: string, config: Record<string, unknown>) =>
+    request<ConnectorRunResponse>(`/connectors/${type}/run`, { method: 'POST', body: JSON.stringify({ config }) }),
 }
