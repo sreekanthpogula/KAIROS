@@ -8,10 +8,10 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 REPO_ROOT = BACKEND_DIR.parent
@@ -39,6 +39,19 @@ class Settings(BaseSettings):
     # interfaces precisely so this swap does not touch business logic.
     database_url: str = Field(default=f"sqlite:///{(REPO_ROOT / 'data' / 'ecip.db').as_posix()}", alias="DATABASE_URL")
     vector_backend: Literal["numpy", "pgvector"] = Field(default="numpy", alias="VECTOR_BACKEND")
+
+    @field_validator("database_url", mode="after")
+    @classmethod
+    def _normalize_postgres_scheme(cls, value: str) -> str:
+        """Neon/Heroku/Railway all hand out `postgres://` or bare
+        `postgresql://` connection strings. SQLAlchemy 2.x needs an explicit
+        driver (`+psycopg`) — without this, pasting a provider's connection
+        string as-is fails with a confusing "can't load plugin" error."""
+        if value.startswith("postgres://"):
+            return "postgresql+psycopg://" + value[len("postgres://"):]
+        if value.startswith("postgresql://"):
+            return "postgresql+psycopg://" + value[len("postgresql://"):]
+        return value
 
     # --- Embeddings ------------------------------------------------------
     embedding_provider: Literal["local_hash", "sentence_transformers", "openai_compatible"] = Field(
@@ -85,7 +98,25 @@ class Settings(BaseSettings):
     sample_dir: str = Field(default=str(REPO_ROOT / "data" / "samples"), alias="SAMPLE_DIR")
 
     # --- CORS --------------------------------------------------------------
-    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"])
+    # Accepts a JSON array OR a plain comma-separated string (the latter is
+    # far easier to paste into a Vercel/Render/Railway env var UI than JSON).
+    cors_origins: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"], alias="CORS_ORIGINS"
+    )
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def _split_cors_origins(cls, value):
+        # NoDecode above stops pydantic-settings from trying (and failing)
+        # to JSON-parse this env var itself, so a plain comma-separated
+        # string reaches this validator untouched.
+        if isinstance(value, str):
+            if value.strip().startswith("["):
+                import json
+
+                return json.loads(value)
+            return [origin.strip() for origin in value.split(",") if origin.strip()]
+        return value
 
     # --- Security ------------------------------------------------------------
     default_security_level: str = Field(default="internal", alias="DEFAULT_SECURITY_LEVEL")

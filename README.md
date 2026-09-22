@@ -116,16 +116,37 @@ cd backend
 uvicorn app.main:app --reload           # serves the API on http://127.0.0.1:8000
 ```
 
-Once the Makefile and `docker-compose.yml` land (tracked separately — see `TODO.md`), the same flow is intended to collapse to:
+The same flow also collapses to one command via the Makefile (`make demo`), or `powershell -File scripts/demo.ps1` on Windows without `make`:
 
 ```bash
-make install   # backend venv + pip install
+make install   # backend venv + pip install + frontend npm install
 make demo      # seed + ingest + evaluate
-make dev       # uvicorn with reload
+make backend   # uvicorn with reload
+make frontend  # vite dev server
 make test      # backend/tests
 ```
 
+Or via Docker (`docker compose up --build`) — provisions Postgres+pgvector, backend, and frontend together; see `docker-compose.yml`.
+
 To exercise higher-quality embeddings or a real LLM instead of the deterministic defaults, install `backend/requirements-optional.txt` and set `EMBEDDING_PROVIDER=sentence_transformers` and/or `LLM_MODE=true` + `LLM_API_KEY=...` — every provider swap is a config change, never a code change (see `backend/app/core/config.py`).
+
+## Deploying to Vercel
+
+The backend and frontend deploy as **two separate Vercel projects** from the same repo. Vercel's serverless functions have a read-only, ephemeral filesystem — no local disk persists between invocations — so this deployment path swaps SQLite for a real Postgres and stores uploaded file bytes in the database row itself rather than on disk (see `Document.raw_content` and `docs/decisions.md`).
+
+**Backend project** — Root Directory: `backend`
+1. In Project Settings → Root Directory, enable **"Include source files outside of the Root Directory in the Build Step"** — the backend needs the sibling `ontology/` and `data/samples/` directories at the repo root.
+2. Add a Postgres database: Storage tab → Marketplace → **Neon** (Vercel's own Postgres offering was retired in favor of this integration) → Connect to this project. It auto-sets `DATABASE_URL`.
+3. Set `CORS_ORIGINS` to the frontend project's URL once you have it (comma-separated if there's more than one, e.g. a preview + production URL).
+4. Set `DEMO_MODE=true` (and any other overrides you want — see `.env.example`).
+5. Deploy. Vercel auto-detects the FastAPI `app` instance at `backend/app/main.py`; `backend/vercel.json` sets a 60s function timeout for document processing.
+6. Once deployed, run the seed + ingestion scripts against the same `DATABASE_URL` from your own machine (`DATABASE_URL=<paste> python scripts/run_demo_ingestion.py`) — there's no build-time hook that populates demo data automatically.
+
+**Frontend project** — Root Directory: `frontend`
+1. Set `VITE_API_BASE_URL` to the backend project's URL + `/api` (e.g. `https://ecip-backend.vercel.app/api`). This is a **build-time** var — set it before deploying, and redeploy (not just restart) after changing it.
+2. Deploy. `frontend/vercel.json` adds the SPA fallback rewrite React Router's client-side routes need (without it, refreshing on `/documents/:id` 404s).
+
+Then go back to the backend project and set `CORS_ORIGINS` to the frontend's actual URL (step 3 above) if you hadn't yet, and redeploy the backend.
 
 ## Demo walkthrough (5 minutes)
 

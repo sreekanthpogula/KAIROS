@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
@@ -29,6 +29,13 @@ class Document(Base):
     source_system: Mapped[str] = mapped_column(String(128), default="demo-sharepoint")
     source_uri: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
     storage_path: Mapped[str] = mapped_column(String(1024))
+    # Mirrors the uploaded bytes in the DB row itself. Serverless platforms
+    # (Vercel et al.) give function code a read-only bundle and no
+    # persistent disk between invocations, so `storage_path` alone can't be
+    # trusted for retry/resume — the DB is the only thing guaranteed to
+    # still be there later. Local/docker deployments still also write to
+    # `storage_path`; see PipelineOrchestrator for the read-back order.
+    raw_content: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
 
     parser_type: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
 

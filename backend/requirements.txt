@@ -1,8 +1,9 @@
 # Core runtime dependencies. Everything here is required for ECIP to run
 # end-to-end in DEMO_MODE with zero external services (SQLite + local
-# deterministic embeddings). See requirements-optional.txt for the
-# production-shaped extras (PostgreSQL driver, pgvector, sentence-transformers,
-# OCR) that are architecturally supported but not required to demo the POC.
+# deterministic embeddings) AND against a real Postgres deployment (Neon,
+# Supabase, Vercel, docker-compose). See requirements-optional.txt for
+# extras (pgvector's native ANN path, sentence-transformers, OCR) that are
+# architecturally supported but not required to run the POC.
 
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
@@ -11,6 +12,7 @@ pydantic-settings==2.7.1
 sqlalchemy==2.0.36
 python-multipart==0.0.20
 PyYAML==6.0.2
+psycopg[binary]==3.2.3
 
 # Document extraction
 PyMuPDF==1.25.1

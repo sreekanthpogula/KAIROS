@@ -2,8 +2,9 @@
 # Install piecemeal as needed — see docs/decisions.md for the trade-off
 # behind each default.
 
-# PostgreSQL + pgvector (DATABASE_URL=postgresql://... , VECTOR_BACKEND=pgvector)
-psycopg[binary]==3.2.3
+# pgvector's native ANN index path (psycopg itself is now a core dependency
+# — see requirements.txt — since Postgres is a first-class deployment
+# target, not just an optional extra).
 pgvector==0.3.6
 
 # Higher-quality local embeddings (EMBEDDING_PROVIDER=sentence_transformers).

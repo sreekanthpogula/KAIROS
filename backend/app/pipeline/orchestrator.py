@@ -102,14 +102,21 @@ class PipelineOrchestrator:
             return duplicate
 
         storage_path = str(Path(self.settings.upload_dir) / f"{hashlib.sha1(checksum.encode()).hexdigest()}{detection.extension}")
-        Path(storage_path).parent.mkdir(parents=True, exist_ok=True)
-        Path(storage_path).write_bytes(content)
+        try:
+            Path(storage_path).parent.mkdir(parents=True, exist_ok=True)
+            Path(storage_path).write_bytes(content)
+        except OSError:
+            # Read-only deployment filesystem (e.g. Vercel Functions) — the
+            # DB-stored `raw_content` below is the real source of truth for
+            # retry/resume either way, so this is safe to skip rather than
+            # fail the whole upload.
+            pass
 
         doc = Document(
             filename=filename, original_filename=filename, mime_type=detection.mime_type,
             extension=detection.extension, size_bytes=len(content), checksum=checksum,
             source_system=source_system, source_uri=source_uri, storage_path=storage_path,
-            parser_type=detection.parser_type, status=IngestionStatus.RECEIVED.value,
+            raw_content=content, parser_type=detection.parser_type, status=IngestionStatus.RECEIVED.value,
             security_level=self.settings.default_security_level, allowed_groups=["employee"],
             ingestion_job_id=ingestion_job.id if ingestion_job else None,
         )
@@ -135,7 +142,7 @@ class PipelineOrchestrator:
         """Re-runs the pipeline for a document that previously FAILED, or
         resumes one whose classification was just corrected in the Review
         Queue. Always idempotent — see module docstring."""
-        content = Path(doc.storage_path).read_bytes()
+        content = self._load_original_bytes(doc)
         doc.error_message = None
         try:
             self._run_pipeline(doc, content, doc.parser_type or "unknown", None, resume=True)
@@ -149,7 +156,7 @@ class PipelineOrchestrator:
         """Called after a human approves/corrects a REVIEW_REQUIRED
         document — continues the pipeline from SEGMENTED onward using the
         (possibly corrected) classification already on the document."""
-        content = Path(doc.storage_path).read_bytes()
+        content = self._load_original_bytes(doc)
         try:
             extraction = get_extractor(doc.parser_type).extract(content, doc.filename)
             self._clear_derived_rows(doc.id)
@@ -376,6 +383,15 @@ class PipelineOrchestrator:
     # ------------------------------------------------------------------ #
     # Helpers
     # ------------------------------------------------------------------ #
+    @staticmethod
+    def _load_original_bytes(doc: Document) -> bytes:
+        """DB-stored bytes are the source of truth (survive serverless cold
+        starts); local disk is only a best-effort convenience that may not
+        even exist for documents ingested before this column existed."""
+        if doc.raw_content is not None:
+            return doc.raw_content
+        return Path(doc.storage_path).read_bytes()
+
     def _clear_derived_rows(self, document_id: str) -> None:
         chunk_ids = [c.id for c in self.db.query(Chunk.id).filter(Chunk.document_id == document_id).all()]
         if chunk_ids:

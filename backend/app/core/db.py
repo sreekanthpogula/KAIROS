@@ -28,7 +28,11 @@ def _make_engine():
         db_path = url.split("///")[-1]
         Path(db_path).parent.mkdir(parents=True, exist_ok=True)
         return create_engine(url, connect_args={"check_same_thread": False})
-    return create_engine(url, pool_pre_ping=True)
+    # Small pool: a serverless function instance (Vercel, etc.) shouldn't
+    # hold many connections against a pooled endpoint (e.g. Neon's
+    # PgBouncer) — a handful of concurrent instances each opening a large
+    # pool exhausts the pooler's own connection limit fast.
+    return create_engine(url, pool_pre_ping=True, pool_size=3, max_overflow=2)
 
 
 engine = _make_engine()
