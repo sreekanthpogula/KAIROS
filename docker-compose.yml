@@ -33,7 +33,6 @@ services:
     environment:
       DEMO_MODE: "true"
       DATABASE_URL: postgresql://ecip:ecip@postgres:5432/ecip
-      ONTOLOGY_PATH: /app/ontology/healthcare_ontology.yaml
       UPLOAD_DIR: /app/data/raw
       PROCESSED_DIR: /app/data/processed
       SAMPLE_DIR: /app/data/samples

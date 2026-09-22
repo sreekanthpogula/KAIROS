@@ -10,8 +10,9 @@ from app.core.db import Base
 
 class OntologyNode(Base):
     """Materialized view of the controlled ontology (loaded from
-    ontology/healthcare_ontology.yaml at startup). Classifiers may only
-    resolve to a leaf node that exists in this table — see ADR-001."""
+    backend/app/ontology_data/healthcare_ontology.yaml at startup).
+    Classifiers may only resolve to a leaf node that exists in this
+    table — see ADR-001."""
 
     __tablename__ = "ontology_nodes"
 

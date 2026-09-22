@@ -71,8 +71,14 @@ class Settings(BaseSettings):
     ocr_provider: Literal["none", "tesseract"] = Field(default="none", alias="OCR_PROVIDER")
 
     # --- Ontology --------------------------------------------------------
+    # Lives inside backend/app/ (not a REPO_ROOT-relative sibling) on
+    # purpose: serverless platforms (Vercel) that deploy `backend/` as a
+    # standalone function bundle don't include sibling directories from
+    # the repo root unless a platform-specific "include outside root
+    # files" setting is enabled. Keeping this self-contained means the
+    # backend works correctly regardless of that setting.
     ontology_path: str = Field(
-        default=str(REPO_ROOT / "ontology" / "healthcare_ontology.yaml"), alias="ONTOLOGY_PATH"
+        default=str(BACKEND_DIR / "app" / "ontology_data" / "healthcare_ontology.yaml"), alias="ONTOLOGY_PATH"
     )
     ontology_version: str = Field(default="1.0", alias="ONTOLOGY_VERSION")
 

@@ -25,7 +25,11 @@ class Document(Base):
     mime_type: Mapped[str] = mapped_column(String(128))
     extension: Mapped[str] = mapped_column(String(32))
     size_bytes: Mapped[int] = mapped_column(Integer)
-    checksum: Mapped[str] = mapped_column(String(64), index=True, unique=True)
+    # 64 chars for a real sha256 hex digest + headroom for the "-dup-XXXXXXXX"
+    # suffix PipelineOrchestrator appends on duplicate marker rows (see
+    # ingest_document) — a real column-length constraint (unlike SQLite,
+    # which never enforces VARCHAR length) caught this being too narrow.
+    checksum: Mapped[str] = mapped_column(String(96), index=True, unique=True)
     source_system: Mapped[str] = mapped_column(String(128), default="demo-sharepoint")
     source_uri: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
     storage_path: Mapped[str] = mapped_column(String(1024))

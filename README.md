@@ -62,7 +62,7 @@ Full reasoning, alternatives considered, and trade-offs for each of these live i
 
 ## Ontology
 
-Documents are classified into a single controlled ontology (`ontology/healthcare_ontology.yaml`, loaded by `app/ontology/service.py`) with **5 domains** — Clinical, Administrative, Financial, Legal, Technical — each broken into categories and leaf document types. Every leaf carries its own `document_type` label, matching `keywords`, a `chunker` hint, and the domain's `default_security_level` / `default_allowed_groups`. Classifiers may only ever resolve to a real leaf id in this file; nothing in application code hard-codes a category name. Full tree and rationale in [docs/ontology.md](docs/ontology.md).
+Documents are classified into a single controlled ontology (`backend/app/ontology_data/healthcare_ontology.yaml`, loaded by `app/ontology/service.py`) with **5 domains** — Clinical, Administrative, Financial, Legal, Technical — each broken into categories and leaf document types. Every leaf carries its own `document_type` label, matching `keywords`, a `chunker` hint, and the domain's `default_security_level` / `default_allowed_groups`. Classifiers may only ever resolve to a real leaf id in this file; nothing in application code hard-codes a category name. Full tree and rationale in [docs/ontology.md](docs/ontology.md).
 
 ## Classification
 
@@ -135,12 +135,12 @@ To exercise higher-quality embeddings or a real LLM instead of the deterministic
 The backend and frontend deploy as **two separate Vercel projects** from the same repo. Vercel's serverless functions have a read-only, ephemeral filesystem — no local disk persists between invocations — so this deployment path swaps SQLite for a real Postgres and stores uploaded file bytes in the database row itself rather than on disk (see `Document.raw_content` and `docs/decisions.md`).
 
 **Backend project** — Root Directory: `backend`
-1. In Project Settings → Root Directory, enable **"Include source files outside of the Root Directory in the Build Step"** — the backend needs the sibling `ontology/` and `data/samples/` directories at the repo root.
-2. Add a Postgres database: Storage tab → Marketplace → **Neon** (Vercel's own Postgres offering was retired in favor of this integration) → Connect to this project. It auto-sets `DATABASE_URL`.
-3. Set `CORS_ORIGINS` to the frontend project's URL once you have it (comma-separated if there's more than one, e.g. a preview + production URL).
-4. Set `DEMO_MODE=true` (and any other overrides you want — see `.env.example`).
-5. Deploy. Vercel auto-detects the FastAPI `app` instance at `backend/app/main.py`; `backend/vercel.json` sets a 60s function timeout for document processing.
-6. Once deployed, run the seed + ingestion scripts against the same `DATABASE_URL` from your own machine (`DATABASE_URL=<paste> python scripts/run_demo_ingestion.py`) — there's no build-time hook that populates demo data automatically.
+1. Add a Postgres database: Storage tab → Marketplace → **Neon** (Vercel's own Postgres offering was retired in favor of this integration) → Connect to this project. It auto-sets `DATABASE_URL`.
+2. Set `CORS_ORIGINS` to the frontend project's URL once you have it (comma-separated if there's more than one, e.g. a preview + production URL).
+3. Set `DEMO_MODE=true` (and any other overrides you want — see `.env.example`).
+4. Deploy. Vercel auto-detects the FastAPI `app` instance at `backend/app/main.py`; `backend/vercel.json` sets a 60s function timeout for document processing. The ontology config lives inside `backend/app/ontology_data/` on purpose (not a repo-root sibling), so there's no "include files outside the root directory" setting to remember.
+5. Once deployed, check `GET /api/health` — `startup_error` will be non-null and tell you exactly what's wrong if the app didn't come up clean.
+6. Run the seed + ingestion scripts against the same `DATABASE_URL` from your own machine (`DATABASE_URL=<paste> python scripts/run_demo_ingestion.py`) — there's no build-time hook that populates demo data automatically.
 
 **Frontend project** — Root Directory: `frontend`
 1. Set `VITE_API_BASE_URL` to the backend project's URL + `/api` (e.g. `https://ecip-backend.vercel.app/api`). This is a **build-time** var — set it before deploying, and redeploy (not just restart) after changing it.

@@ -1,6 +1,6 @@
 """Unit tests for app.ontology.service.OntologyService (spec section 13).
 
-Uses the real ontology/healthcare_ontology.yaml via get_ontology_service()
+Uses the real backend/app/ontology_data/healthcare_ontology.yaml via get_ontology_service()
 (a stateless, read-only, @lru_cache'd singleton) — no DB needed.
 """
 from __future__ import annotations

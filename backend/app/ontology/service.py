@@ -3,7 +3,7 @@
 This is the ONLY place ontology structure is read from disk. Every other
 module (classifiers, chunker selector, security defaults, API routes) goes
 through this service, so the ontology can be edited/versioned in
-ontology/healthcare_ontology.yaml without touching application code
+backend/app/ontology_data/healthcare_ontology.yaml without touching application code
 (ADR-001, docs/decisions.md).
 """
 from __future__ import annotations
