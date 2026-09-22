@@ -1,27 +1,34 @@
 from __future__ import annotations
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import documents, health, ingestion, metrics, ontology, rag, reviews, scale, search
+from app.core import runtime_state
 from app.core.config import get_settings
 from app.core.db import SessionLocal, init_db
 from app.core.startup import sync_ontology_nodes
 from app.ontology.service import get_ontology_service
 
 settings = get_settings()
+logger = logging.getLogger("ecip.startup")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
-    db = SessionLocal()
     try:
-        sync_ontology_nodes(db, get_ontology_service())
-    finally:
-        db.close()
+        init_db()
+        db = SessionLocal()
+        try:
+            sync_ontology_nodes(db, get_ontology_service())
+        finally:
+            db.close()
+    except Exception as exc:  # noqa: BLE001 - deliberately broad: startup must never take the whole API down
+        runtime_state.startup_error = f"{type(exc).__name__}: {exc}"
+        logger.error("ECIP startup failed - API is running in a degraded state: %s", runtime_state.startup_error, exc_info=True)
     yield
 
 

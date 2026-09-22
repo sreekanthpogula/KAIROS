@@ -29,6 +29,12 @@ export function SystemHealth() {
             <Field label="LLM mode active" value={health.llm_mode ? 'yes' : 'no'} />
           </div>
         )}
+        {health?.startup_error && (
+          <div className="border-t px-5 py-4 text-sm" style={{ borderColor: 'var(--border)', color: 'var(--status-critical)' }}>
+            <p className="font-medium">Startup failed — API is running in a degraded state:</p>
+            <p className="mt-1 font-mono text-xs">{health.startup_error}</p>
+          </div>
+        )}
       </Card>
 
       <Card>

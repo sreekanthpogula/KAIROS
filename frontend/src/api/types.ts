@@ -262,6 +262,7 @@ export interface ScaleSimulationResult {
 
 export interface HealthResponse {
   status: string
+  startup_error: string | null
   app_name: string
   demo_mode: boolean
   llm_mode: boolean
