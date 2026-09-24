@@ -24,7 +24,7 @@ def test_catalog_endpoint_lists_five_connectors(client):
     assert resp.status_code == 200
     body = resp.json()
     types = {entry["type"] for entry in body}
-    assert types == {"filesystem", "http", "s3", "database", "webhook"}
+    assert types == {"filesystem", "http", "s3", "database", "gcs", "google_drive", "webhook"}
     webhook_entry = next(e for e in body if e["type"] == "webhook")
     assert webhook_entry["direction"] == "push"
 

@@ -1,4 +1,4 @@
-# ECIP Build Checklist
+# KCIP Build Checklist
 
 All phases complete. Verified end-to-end: backend (100/100 tests passing),
 frontend (visually verified via headless-browser screenshots across every

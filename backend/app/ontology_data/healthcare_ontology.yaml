@@ -1,4 +1,4 @@
-# ECIP Controlled Enterprise Ontology — Healthcare domain
+# KCIP Controlled Enterprise Ontology — Healthcare domain
 #
 # This file is the single source of truth for every category a document can
 # be classified into. Classifiers may only resolve to a `type` id defined

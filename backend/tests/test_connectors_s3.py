@@ -14,11 +14,11 @@ from app.connectors.s3_connector import S3Connector
 def s3_bucket():
     with mock_aws():
         client = boto3.client("s3", region_name="us-east-1")
-        client.create_bucket(Bucket="ecip-test-bucket")
-        client.put_object(Bucket="ecip-test-bucket", Key="docs/a.txt", Body=b"first")
-        client.put_object(Bucket="ecip-test-bucket", Key="docs/b.txt", Body=b"second")
-        client.put_object(Bucket="ecip-test-bucket", Key="other/c.txt", Body=b"third")
-        yield "ecip-test-bucket"
+        client.create_bucket(Bucket="kcip-test-bucket")
+        client.put_object(Bucket="kcip-test-bucket", Key="docs/a.txt", Body=b"first")
+        client.put_object(Bucket="kcip-test-bucket", Key="docs/b.txt", Body=b"second")
+        client.put_object(Bucket="kcip-test-bucket", Key="other/c.txt", Body=b"third")
+        yield "kcip-test-bucket"
 
 
 def test_lists_and_downloads_objects(s3_bucket):

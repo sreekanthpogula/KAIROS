@@ -1,4 +1,4 @@
-"""Tests for the connector registry/catalog, and the ECIP-specific glue
+"""Tests for the connector registry/catalog, and the KCIP-specific glue
 (app/services/connector_ingestion.py) that feeds connector output through
 the real pipeline — the same one manual uploads go through."""
 from __future__ import annotations
@@ -10,10 +10,10 @@ from app.connectors.registry import get_connector_registry
 from app.services.connector_ingestion import run_connector
 
 
-def test_catalog_lists_all_four_pull_connectors():
+def test_catalog_lists_all_six_pull_connectors():
     catalog = get_connector_registry().list_catalog()
     types = {entry["type"] for entry in catalog}
-    assert types == {"filesystem", "http", "s3", "database"}
+    assert types == {"filesystem", "http", "s3", "database", "gcs", "google_drive"}
     assert all(entry["direction"] == "pull" for entry in catalog)
     assert all(isinstance(entry["config_schema"], dict) for entry in catalog)
 

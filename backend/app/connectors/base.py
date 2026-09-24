@@ -2,13 +2,13 @@
 depends on.
 
 Design intent: this whole `app/connectors/` package has ZERO imports from
-the rest of ECIP (no `app.core`, `app.models`, `app.pipeline`, nothing
+the rest of KCIP (no `app.core`, `app.models`, `app.pipeline`, nothing
 FastAPI/SQLAlchemy-model-specific). Its only third-party dependencies are
 generic, widely-used libraries (httpx, boto3, sqlalchemy-core). That's
 deliberate: you can copy this directory into an entirely different
 project and wire `ConnectorDocument` output into whatever ingestion
-pipeline that project has — nothing here assumes it's talking to ECIP
-specifically. ECIP's own glue code that feeds connector output into
+pipeline that project has — nothing here assumes it's talking to KCIP
+specifically. KCIP's own glue code that feeds connector output into
 PipelineOrchestrator.ingest_document() lives separately, in
 app/services/connector_ingestion.py — THAT file is not portable, and
 isn't meant to be.

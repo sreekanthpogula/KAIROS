@@ -20,7 +20,7 @@ import type {
 // Local dev: relative path, proxied to localhost:8000 by Vite (see
 // vite.config.ts). A static production build has no such proxy — set
 // VITE_API_BASE_URL at BUILD time (Vercel project env var) to the deployed
-// backend's URL, e.g. https://ecip-backend.vercel.app/api.
+// backend's URL, e.g. https://kcip-backend.vercel.app/api.
 const BASE = import.meta.env.VITE_API_BASE_URL || '/api'
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {

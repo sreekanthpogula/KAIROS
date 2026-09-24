@@ -1,4 +1,4 @@
-"""Ingests the synthetic demo corpus (data/samples/) through the full ECIP
+"""Ingests the synthetic demo corpus (data/samples/) through the full KCIP
 pipeline: detect -> extract -> classify -> map ontology -> enrich ->
 segment -> chunk -> embed -> index.
 

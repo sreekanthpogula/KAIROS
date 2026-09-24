@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for the ECIP backend test suite.
+"""Shared pytest fixtures for the KCIP backend test suite.
 
 CRITICAL ordering constraint: DATABASE_URL must be set in the environment
 BEFORE any `app.*` module is ever imported in this process, because
@@ -8,14 +8,14 @@ at MODULE IMPORT TIME from get_settings(). Because conftest.py is always
 collected by pytest before any test module is imported, doing this here,
 before any other import, guarantees every test in the suite talks to the
 same isolated on-disk SQLite test database instead of the real
-data/ecip.db used by the manually-verified running backend.
+data/kcip.db used by the manually-verified running backend.
 """
 from __future__ import annotations
 
 import os
 from pathlib import Path
 
-_TEST_DB_PATH = Path(__file__).parent / "test_ecip.db"
+_TEST_DB_PATH = Path(__file__).parent / "test_kcip.db"
 os.environ.setdefault("DATABASE_URL", "sqlite:///" + _TEST_DB_PATH.as_posix())
 os.environ.setdefault("DEMO_MODE", "true")
 os.environ.setdefault("LLM_MODE", "false")

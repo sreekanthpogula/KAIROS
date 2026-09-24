@@ -23,7 +23,7 @@ router = APIRouter()
 _WEBHOOK_CATALOG_ENTRY = {
     "type": "webhook",
     "display_name": "Webhook (inbound push)",
-    "description": "Other systems POST documents directly to this endpoint, instead of ECIP pulling from them. "
+    "description": "Other systems POST documents directly to this endpoint, instead of KCIP pulling from them. "
     "Requires WEBHOOK_INGESTION_TOKEN to be set — see /api/connectors/webhook/ingest.",
     "direction": "push",
     "config_schema": {

@@ -1,4 +1,4 @@
-"""Connector catalog. Still zero-dependency on the rest of ECIP — the
+"""Connector catalog. Still zero-dependency on the rest of KCIP — the
 registry just knows about connector classes, nothing about how their
 output gets used downstream."""
 from __future__ import annotations
@@ -6,6 +6,8 @@ from __future__ import annotations
 from app.connectors.base import BaseConnector
 from app.connectors.database_connector import DatabaseConnector
 from app.connectors.filesystem_connector import FilesystemConnector
+from app.connectors.gcs_connector import GcsConnector
+from app.connectors.google_drive_connector import GoogleDriveConnector
 from app.connectors.http_connector import HttpConnector
 from app.connectors.s3_connector import S3Connector
 
@@ -14,6 +16,8 @@ PULL_CONNECTOR_CLASSES: list[type[BaseConnector]] = [
     HttpConnector,
     S3Connector,
     DatabaseConnector,
+    GcsConnector,
+    GoogleDriveConnector,
 ]
 
 

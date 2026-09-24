@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 
-if (localStorage.getItem('ecip-theme') !== 'light') {
+if (localStorage.getItem('kcip-theme') !== 'light') {
   document.documentElement.classList.add('dark')
 }
 

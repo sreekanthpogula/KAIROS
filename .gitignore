@@ -67,14 +67,14 @@ node_modules/
 frontend/dist/
 frontend/.vite/
 
-# --- ECIP data / runtime artifacts ----------------------------------------------------------
+# --- KCIP data / runtime artifacts ----------------------------------------------------------
 data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
 *.db
 *.db-journal
-backend/tests/test_ecip.db
+backend/tests/test_kcip.db
 
 # --- Editor / OS -------------------------------------------------------------------------------
 .vscode/

@@ -11,6 +11,8 @@ const EXAMPLE_CONFIG: Record<string, string> = {
   http: '{\n  "urls": ["https://example.com/document.pdf"]\n}',
   s3: '{\n  "bucket": "your-bucket-name",\n  "region_name": "us-east-1",\n  "prefix": "documents/"\n}',
   database: '{\n  "connection_string": "sqlite:///./legacy_system.db",\n  "query": "SELECT filename, body FROM attachments",\n  "filename_column": "filename",\n  "content_column": "body"\n}',
+  gcs: '{\n  "bucket": "your-gcs-bucket",\n  "prefix": "documents/",\n  "credentials_json": "{\\"type\\": \\"service_account\\", ...}"\n}',
+  google_drive: '{\n  "credentials_json": "{\\"type\\": \\"service_account\\", ...}",\n  "folder_id": "your-drive-folder-id"\n}',
 }
 
 export function Connectors() {
@@ -66,7 +68,7 @@ export function Connectors() {
       <div>
         <h1 className="text-xl font-semibold">Connector Catalog</h1>
         <p className="text-sm text-[var(--text-secondary)]">
-          A self-contained module (<code>backend/app/connectors/</code>) with zero dependencies on the rest of ECIP — designed to be copied into any other project's ingestion pipeline.
+          A self-contained module (<code>backend/app/connectors/</code>) with zero dependencies on the rest of KCIP — designed to be copied into any other project's ingestion pipeline.
         </p>
       </div>
 
@@ -103,7 +105,7 @@ export function Connectors() {
             </Card>
           ) : selected.direction === 'push' ? (
             <Card>
-              <CardHeader title={selected.display_name} subtitle="Push connector — other systems call this endpoint, ECIP doesn't poll it" />
+              <CardHeader title={selected.display_name} subtitle="Push connector — other systems call this endpoint, KCIP doesn't poll it" />
               <div className="space-y-3 p-5 text-sm">
                 <p className="text-[var(--text-secondary)]">
                   Set <code>WEBHOOK_INGESTION_TOKEN</code> in the backend's environment, then any external system can push a document with:
@@ -170,8 +172,8 @@ export function Connectors() {
 
               <Card className="p-4 text-xs text-[var(--text-secondary)]">
                 <p>
-                  Portability note: this connector's entire implementation lives in one file with no imports from the rest of ECIP beyond{' '}
-                  <code>app/connectors/base.py</code>. The only thing tying it to this app is <code>app/services/connector_ingestion.py</code>, which feeds its output into ECIP's own pipeline — swap that one file out and the connector works unmodified in any other project.
+                  Portability note: this connector's entire implementation lives in one file with no imports from the rest of KCIP beyond{' '}
+                  <code>app/connectors/base.py</code>. The only thing tying it to this app is <code>app/services/connector_ingestion.py</code>, which feeds its output into KCIP's own pipeline — swap that one file out and the connector works unmodified in any other project.
                 </p>
               </Card>
             </div>

@@ -1,4 +1,4 @@
-# Core runtime dependencies. Everything here is required for ECIP to run
+# Core runtime dependencies. Everything here is required for KCIP to run
 # end-to-end in DEMO_MODE with zero external services (SQLite + local
 # deterministic embeddings) AND against a real Postgres deployment (Neon,
 # Supabase, Vercel, docker-compose). See requirements-optional.txt for
@@ -32,8 +32,13 @@ httpx==0.28.1
 # Synthetic sample-corpus generation (scripts/seed_demo_data.py)
 reportlab==4.2.5
 
-# Connector catalog (app/connectors/) — S3-compatible object storage
+# Connector catalog (app/connectors/) — S3-compatible object storage, and
+# Google-specific connectors modeled after Vertex AI Search's "Data Store +
+# connector" concept (Cloud Storage buckets, Drive files/folders)
 boto3==1.35.99
+google-cloud-storage==2.19.0
+google-api-python-client==2.159.0
+google-auth==2.37.0
 
 # Testing
 pytest==8.3.4

@@ -20,24 +20,28 @@ REPO_ROOT = BACKEND_DIR.parent
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "Enterprise Content Intelligence Platform"
-    app_short_name: str = "ECIP"
+    app_name: str = "Kairos Content Intelligence Platform"
+    app_short_name: str = "KCIP"
     environment: str = "local"
 
     # --- Mode switches -----------------------------------------------
     # DEMO_MODE runs the entire pipeline deterministically with no external
     # API calls. LLM_MODE is only honored for stages that explicitly support
     # an LLM-backed provider (ambiguous-case classification, RAG answer
-    # synthesis) and only when an API key is actually configured.
+    # synthesis) and only when an API key is actually configured — see
+    # `effective_llm_mode` below. LLM_MODE defaults to on, and llm_provider
+    # defaults to openai_compatible, so the ONLY thing standing between
+    # "on" and actually calling a real LLM is setting LLM_API_KEY — there's
+    # no second flag to remember to flip.
     demo_mode: bool = Field(default=True, alias="DEMO_MODE")
-    llm_mode: bool = Field(default=False, alias="LLM_MODE")
+    llm_mode: bool = Field(default=True, alias="LLM_MODE")
 
     # --- Storage -------------------------------------------------------
     # Production target is PostgreSQL + pgvector (see docker-compose.yml).
     # Default here is a zero-setup SQLite file so the POC runs with no
     # external services. The DB/vector layers are abstracted behind
     # interfaces precisely so this swap does not touch business logic.
-    database_url: str = Field(default=f"sqlite:///{(REPO_ROOT / 'data' / 'ecip.db').as_posix()}", alias="DATABASE_URL")
+    database_url: str = Field(default=f"sqlite:///{(REPO_ROOT / 'data' / 'kcip.db').as_posix()}", alias="DATABASE_URL")
     vector_backend: Literal["numpy", "pgvector"] = Field(default="numpy", alias="VECTOR_BACKEND")
 
     @field_validator("database_url", mode="after")
@@ -62,7 +66,7 @@ class Settings(BaseSettings):
     embedding_batch_size: int = Field(default=32, alias="EMBEDDING_BATCH_SIZE")
 
     # --- LLM (provider-independent; OpenAI-compatible wire format) ------
-    llm_provider: Literal["mock", "openai_compatible"] = Field(default="mock", alias="LLM_PROVIDER")
+    llm_provider: Literal["mock", "openai_compatible"] = Field(default="openai_compatible", alias="LLM_PROVIDER")
     llm_api_base: str = Field(default="https://api.openai.com/v1", alias="LLM_API_BASE")
     llm_api_key: str = Field(default="", alias="LLM_API_KEY")
     llm_model: str = Field(default="gpt-4o-mini", alias="LLM_MODEL")

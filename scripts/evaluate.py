@@ -100,7 +100,7 @@ def main() -> None:
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
-    print("=== ECIP POC Evaluation ===")
+    print("=== KCIP POC Evaluation ===")
     print(f"Classification: {classification['ontology_accuracy']:.1%} ontology accuracy, "
           f"{classification['domain_accuracy']:.1%} domain accuracy, {classification['review_rate']:.1%} review rate "
           f"over {classification['total_documents']} golden documents")

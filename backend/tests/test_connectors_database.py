@@ -1,7 +1,7 @@
 """Unit tests for app.connectors.database_connector, against a throwaway
 SQLite file it never has to know is SQLite specifically — the whole point
 of using plain SQLAlchemy-core is that this same connector works
-unmodified against Postgres/MySQL/etc. Deliberately NOT the ECIP app
+unmodified against Postgres/MySQL/etc. Deliberately NOT the KCIP app
 database — this connector reads from *some other system's* table."""
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Generates the synthetic ECIP demo corpus into data/samples/.
+"""Generates the synthetic KCIP demo corpus into data/samples/.
 
 Every document is entirely synthetic enterprise content authored for this
 POC. No real patient data, no real PHI, no data pulled from any external
@@ -32,9 +32,9 @@ OUT_DIR = REPO_ROOT / "data" / "samples"
 # ---------------------------------------------------------------------------
 def write_pdf(path: Path, title: str, sections: list[tuple[str, str]], table: tuple[list, list[list]] | None = None) -> None:
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle("ECIPTitle", parent=styles["Title"], fontSize=20, spaceAfter=18)
-    heading_style = ParagraphStyle("ECIPHeading", parent=styles["Heading1"], fontSize=16, spaceAfter=10, spaceBefore=14)
-    body_style = ParagraphStyle("ECIPBody", parent=styles["Normal"], fontSize=10, leading=14, spaceAfter=8)
+    title_style = ParagraphStyle("KCIPTitle", parent=styles["Title"], fontSize=20, spaceAfter=18)
+    heading_style = ParagraphStyle("KCIPHeading", parent=styles["Heading1"], fontSize=16, spaceAfter=10, spaceBefore=14)
+    body_style = ParagraphStyle("KCIPBody", parent=styles["Normal"], fontSize=10, leading=14, spaceAfter=8)
 
     flow = [Paragraph(title, title_style), Spacer(1, 12)]
     for heading, body in sections:

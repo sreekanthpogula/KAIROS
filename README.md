@@ -1,16 +1,16 @@
-# ECIP — Enterprise Content Intelligence Platform
+# KCIP — Kairos Content Intelligence Platform
 
 **A manager-facing architecture proof-of-concept: if we had 1TB of heterogeneous enterprise files, here's how we'd understand them before we ever embed a single one.**
 
 > We don't just embed documents, we understand them first.
 
-ECIP is a fully-built, manually verified, end-to-end backend that ingests a heterogeneous document corpus (PDF, Word, Excel, PowerPoint, HTML, plain text, Markdown, CSV, email) and, before anything gets near a vector index, figures out **what each document actually is**: its type, its place in a controlled enterprise ontology, who is allowed to see it, how it's structured internally, and how confident the system is in all of that. Only then does it chunk, embed, and index — and every answer it later gives back carries citations and a full lineage trail to the exact page/section/chunk that produced it.
+KCIP is a fully-built, manually verified, end-to-end backend that ingests a heterogeneous document corpus (PDF, Word, Excel, PowerPoint, HTML, plain text, Markdown, CSV, email) and, before anything gets near a vector index, figures out **what each document actually is**: its type, its place in a controlled enterprise ontology, who is allowed to see it, how it's structured internally, and how confident the system is in all of that. Only then does it chunk, embed, and index — and every answer it later gives back carries citations and a full lineage trail to the exact page/section/chunk that produced it.
 
 This is an architecture demonstration for engineering leadership, not a chatbot demo. The interesting part isn't "it can answer a question about a PDF" — it's the reasoning that happens *before* retrieval, and the explicit, honest trade-offs made at every stage (see [docs/decisions.md](docs/decisions.md)).
 
 ## The problem: why naive RAG breaks at enterprise scale
 
-The default RAG recipe — `file → parse → fixed-size chunk → embed → vector DB → top-k → stuff into prompt` — works fine for a demo with twenty PDFs that all look alike. It breaks down once the corpus is large and heterogeneous, which is the normal condition of a real enterprise:
+The default RAG rkcipe — `file → parse → fixed-size chunk → embed → vector DB → top-k → stuff into prompt` — works fine for a demo with twenty PDFs that all look alike. It breaks down once the corpus is large and heterogeneous, which is the normal condition of a real enterprise:
 
 - **No file-type awareness.** A fixed-size character chunker treats a spreadsheet of claim rows exactly like contract prose. It splits tables mid-record and separates data rows from the header that gave them meaning.
 - **No classification.** Every chunk is anonymous. There's no way to answer "only search financial documents" or "exclude anything this user's role shouldn't see" without re-deriving document identity from scratch, per query, from raw text.
@@ -19,7 +19,7 @@ The default RAG recipe — `file → parse → fixed-size chunk → embed → ve
 - **No lineage.** When a RAG answer is wrong, there's no way to trace it back to a specific page, section, chunk, extractor version, or classifier version — so there's no way to debug it, either.
 - **No confidence signal.** Every chunk is trusted equally. A genuinely ambiguous document (weak signals, mixed topics) gets silently filed next to a clear one with no indication anyone should double check it.
 
-At "1TB of files" scale these failures don't average out — they compound. ECIP's answer is to spend a bounded amount of work *understanding* a document before embedding it, so that chunking, indexing, retrieval, and security all become simpler and more correct downstream, instead of harder.
+At "1TB of files" scale these failures don't average out — they compound. KCIP's answer is to spend a bounded amount of work *understanding* a document before embedding it, so that chunking, indexing, retrieval, and security all become simpler and more correct downstream, instead of harder.
 
 ## Architecture overview
 
@@ -86,7 +86,7 @@ Any document whose blended classification confidence falls below `0.70` halts th
 
 ## Scale strategy
 
-ECIP does **not** pretend to process 1TB of files in a local POC. `app/services/scale_simulator.py` instead simulates document counts, storage, throughput, and cost-aware-routing distribution at any scale (15 docs up to a "1TB" preset), calibrated two ways: ratios that describe *this POC's own measured behavior* (chunks-per-document, confidence-band distribution) are queried live from its own database; everything about a corpus this POC never loads (average enterprise document size, worker throughput) is grounded in cited public reference points (AIIM/ECM survey figures, the public MIMIC-III/IV critical-care database's documented structured-vs-free-text storage split) rather than benchmarked. Every number the simulator returns is explicitly labeled `"simulated": true`. Full detail in [docs/production-scaling.md](docs/production-scaling.md).
+KCIP does **not** pretend to process 1TB of files in a local POC. `app/services/scale_simulator.py` instead simulates document counts, storage, throughput, and cost-aware-routing distribution at any scale (15 docs up to a "1TB" preset), calibrated two ways: ratios that describe *this POC's own measured behavior* (chunks-per-document, confidence-band distribution) are queried live from its own database; everything about a corpus this POC never loads (average enterprise document size, worker throughput) is grounded in cited public reference points (AIIM/ECM survey figures, the public MIMIC-III/IV critical-care database's documented structured-vs-free-text storage split) rather than benchmarked. Every number the simulator returns is explicitly labeled `"simulated": true`. Full detail in [docs/production-scaling.md](docs/production-scaling.md).
 
 ## Evaluation summary
 
@@ -100,7 +100,7 @@ This is a POC evaluation on a small, synthetic golden set — a regression check
 
 ## Running locally
 
-ECIP runs entirely locally with **zero external services** by default: SQLite for storage, a dependency-free deterministic local-hash embedding provider, and a mock LLM provider that's simply never called unless you configure a real one (`DEMO_MODE=true` is the default in `backend/app/core/config.py`).
+KCIP runs entirely locally with **zero external services** by default: SQLite for storage, a dependency-free deterministic local-hash embedding provider, and a mock LLM provider that's simply never called unless you configure a real one (`DEMO_MODE=true` is the default in `backend/app/core/config.py`).
 
 ```bash
 # from the repo root
@@ -143,14 +143,14 @@ The backend and frontend deploy as **two separate Vercel projects** from the sam
 6. Run the seed + ingestion scripts against the same `DATABASE_URL` from your own machine (`DATABASE_URL=<paste> python scripts/run_demo_ingestion.py`) — there's no build-time hook that populates demo data automatically.
 
 **Frontend project** — Root Directory: `frontend`
-1. Set `VITE_API_BASE_URL` to the backend project's URL + `/api` (e.g. `https://ecip-backend.vercel.app/api`). This is a **build-time** var — set it before deploying, and redeploy (not just restart) after changing it.
+1. Set `VITE_API_BASE_URL` to the backend project's URL + `/api` (e.g. `https://kcip-backend.vercel.app/api`). This is a **build-time** var — set it before deploying, and redeploy (not just restart) after changing it.
 2. Deploy. `frontend/vercel.json` adds the SPA fallback rewrite React Router's client-side routes need (without it, refreshing on `/documents/:id` 404s).
 
 Then go back to the backend project and set `CORS_ORIGINS` to the frontend's actual URL (step 3 above) if you hadn't yet, and redeploy the backend.
 
 ## Demo walkthrough (5 minutes)
 
-1. **The problem.** Naive `parse → chunk → embed` RAG has no concept of document type, ontology, security, or confidence (see above). ECIP is the alternative.
+1. **The problem.** Naive `parse → chunk → embed` RAG has no concept of document type, ontology, security, or confidence (see above). KCIP is the alternative.
 2. **Upload heterogeneous documents.** `POST /api/documents/upload` with any of the 9 formats in `data/samples/` (PDF, DOCX, XLSX, PPTX, HTML, TXT, MD, CSV, EML) — same endpoint, same response shape, format-appropriate extraction under the hood.
 3. **Semantic classification.** `GET /api/documents/{id}` shows the hybrid classifier's decision, its confidence, and its `reasoning_signals` — e.g. `provider_agreement_northvalley.pdf` lands `legal.contracts.provider_agreement` at high confidence off filename + heading + body corroboration.
 4. **Ontology mapping.** `GET /api/ontology` renders the full 5-domain tree with live document/chunk counts rolled up per node.

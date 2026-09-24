@@ -1,4 +1,4 @@
-# ECIP Architecture
+# KCIP Architecture
 
 This document is the system-level map. Each subsystem gets a deeper, dedicated treatment elsewhere in `docs/` — this page exists to show how they fit together and to give the one-paragraph "why" for each layer before you go read the details.
 

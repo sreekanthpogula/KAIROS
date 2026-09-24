@@ -1,6 +1,6 @@
-"""Wires the portable connector catalog (app/connectors/) into ECIP's own
+"""Wires the portable connector catalog (app/connectors/) into KCIP's own
 pipeline. Unlike everything in app/connectors/, this file is deliberately
-ECIP-specific — it's the one place that imports both the connector
+KCIP-specific — it's the one place that imports both the connector
 interface and PipelineOrchestrator."""
 from __future__ import annotations
 

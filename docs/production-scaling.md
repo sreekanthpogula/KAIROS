@@ -6,7 +6,7 @@ This document is explicit about a single point: **this POC is not production-rea
 
 | Layer | Local POC (what's actually running) | Production target (what it's shaped for) |
 |---|---|---|
-| Storage | SQLite, single file, `data/ecip.db` | PostgreSQL, managed/HA, connection pooling |
+| Storage | SQLite, single file, `data/kcip.db` | PostgreSQL, managed/HA, connection pooling |
 | Vector index | numpy cosine similarity, in-process, recomputed per query | pgvector (ANN index — HNSW/IVFFlat) or a dedicated vector database |
 | Lexical index | BM25 (`rank_bm25`), rebuilt fresh per query over the candidate set | Persistent inverted index (Postgres `tsvector`/GIN, or a dedicated search engine) |
 | Object storage | Local filesystem (`data/raw/`, `data/samples/`) | S3 / Azure Data Lake Storage / GCS |

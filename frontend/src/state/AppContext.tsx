@@ -16,17 +16,17 @@ interface AppState {
 const AppCtx = createContext<AppState | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('ecip-theme') === 'light' ? 'light' : 'dark'))
-  const [actingAs, setActingAs] = useState<Group>(() => (localStorage.getItem('ecip-group') as Group) || 'legal')
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('kcip-theme') === 'light' ? 'light' : 'dark'))
+  const [actingAs, setActingAs] = useState<Group>(() => (localStorage.getItem('kcip-group') as Group) || 'legal')
   const [health, setHealth] = useState<HealthResponse | null>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem('ecip-theme', theme)
+    localStorage.setItem('kcip-theme', theme)
   }, [theme])
 
   useEffect(() => {
-    localStorage.setItem('ecip-group', actingAs)
+    localStorage.setItem('kcip-group', actingAs)
   }, [actingAs])
 
   useEffect(() => {
